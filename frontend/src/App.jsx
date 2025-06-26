@@ -1,12 +1,16 @@
-// src/App.jsx
-import './App.css';
-import WeatherFetcher from './components/WeatherFetcher';
+// src/App.jsx or src/Routes.jsx
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import HomePage from './pages/HomePage';
+import WeatherFetcher from './components/WeatherFetcher'; // Predict page entry
 
 function App() {
   return (
-    <div className="App">
-      <WeatherFetcher />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/predict" element={<WeatherFetcher />} />
+      </Routes>
+    </Router>
   );
 }
 

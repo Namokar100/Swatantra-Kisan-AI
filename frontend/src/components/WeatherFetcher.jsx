@@ -7,36 +7,24 @@ const WeatherFetcher = () => {
   const [weatherData, setWeatherData] = useState(null);
   const [error, setError] = useState('');
 
-  // Replace with your actual API key
   const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
 
   useEffect(() => {
-    // Automatically get user's location using the browser's Geolocation API
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
-        console.log(latitude, longitude);
 
-        // Call OpenWeather API for 1-day forecast
         axios
           .get(
             `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&units=metric&appid=${API_KEY}`
           )
           .then((response) => {
-            const forecast = response.data.list[0]; // Get closest forecast
+            const forecast = response.data.list[0];
             const temperature = forecast.main.temp;
             const humidity = forecast.main.humidity;
-
-            // Estimate soil moisture based on humidity heuristically (can be improved)
             const moisture = humidity >= 70 ? 45 : humidity >= 50 ? 35 : 25;
-            
-            console.log(`Temperature: ${temperature}, Humidity: ${humidity}, Moisture: ${moisture}`);
 
-            setWeatherData({
-              temperature,
-              humidity,
-              moisture,
-            });
+            setWeatherData({ temperature, humidity, moisture });
           })
           .catch((err) => {
             setError('Failed to fetch weather data');
@@ -50,9 +38,22 @@ const WeatherFetcher = () => {
     );
   }, []);
 
-  if (error) return <div>{error}</div>;
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-100 to-lime-200 text-red-600 text-lg font-semibold px-4">
+        {error}
+      </div>
+    );
+  }
 
-  if (!weatherData) return <div>Fetching weather data...</div>;
+  if (!weatherData) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-green-100 to-lime-200 text-green-900">
+        <div className="text-2xl font-bold mb-4 animate-pulse">Fetching weather data...</div>
+        <div className="w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   return (
     <CropPredictor
