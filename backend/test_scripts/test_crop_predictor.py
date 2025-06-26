@@ -2,7 +2,7 @@ import pickle
 import numpy as np
 
 # Load the saved model and scaler
-with open('/mnt/e/VAPT projects/2505/soil-npk-crop-predictor/models/crop_recommendation_model.pkl', 'rb') as f:
+with open('../models/crop_recommendation_model.pkl', 'rb') as f:
     model_data = pickle.load(f)
 
 model = model_data['model']

@@ -2,8 +2,8 @@ import joblib
 import pandas as pd
 
 # Load models
-model = joblib.load('/mnt/e/VAPT projects/2505/soil-npk-crop-predictor/models/npk_predictor_model.pkl')
-preprocessor = joblib.load('/mnt/e/VAPT projects/2505/soil-npk-crop-predictor/models/preprocessor.pkl')
+model = joblib.load('../models/npk_predictor_model.pkl')
+preprocessor = joblib.load('../models/preprocessor.pkl')
 
 # Sample input
 input_data = pd.DataFrame([{
