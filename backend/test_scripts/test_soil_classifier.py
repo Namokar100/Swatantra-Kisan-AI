@@ -3,14 +3,14 @@ import numpy as np
 from tensorflow.keras.preprocessing.image import load_img, img_to_array
 
 # Load the saved model
-model_path = model_path = '/mnt/e/VAPT projects/2505/soil-npk-crop-predictor/models/soil_classifier_model.keras'  # Path to the model
+model_path = model_path = '../models/soil_classifier_model.keras'  # Path to the model
 model = tf.keras.models.load_model(model_path)
 
 # Print model summary to verify loading
 model.summary()
 
 # Path to the test image
-image_path = '/mnt/e/VAPT projects/2505/soil-npk-crop-predictor/images/Black1.jpg'  # Replace with the actual image name
+image_path = '../images/Black1.jpg'  # Replace with the actual image name
 
 # Preprocess the image
 img_size = (224, 224)  # Input size for the model
@@ -24,7 +24,7 @@ predictions = model.predict(image_array)
 predicted_class = np.argmax(predictions, axis=1)
 
 # Get class labels (assuming the model was trained with categorical labels)
-class_labels = ['Black', 'Red', 'Clay', 'Laterite', 'Sandy', 'Alluvial']  # Replace with actual class names
+class_labels = ['Alluvial', 'Black', 'Clay', 'Laterite', 'Red', 'Sandy']  # Sorted alphabetically
 
 # Print the prediction
 print(f"Predicted Class: {class_labels[predicted_class[0]]}")

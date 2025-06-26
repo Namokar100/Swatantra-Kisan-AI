@@ -23,7 +23,7 @@ crop_model = crop_model_data['model']
 crop_scaler = crop_model_data['scaler']
 
 # Define soil class labels
-SOIL_CLASSES = ['Black', 'Red', 'Clay', 'Laterite', 'Sandy', 'Alluvial']
+SOIL_CLASSES = ['Alluvial', 'Black', 'Clay', 'Laterite', 'Red', 'Sandy']
 
 
 # ====== Soil Classification ======
@@ -106,9 +106,9 @@ def run_pipeline(image_path, temperature, humidity, moisture, ph, rainfall):
 if __name__ == "__main__":
     # Sample Inputs
     IMAGE_PATH = 'images/Black1.jpg'  # Change this to the actual test image
-    TEMP = 20.5
-    HUMIDITY = 65.0
-    MOISTURE = 40.0
+    TEMP = 26
+    HUMIDITY = 66
+    MOISTURE = 35
     PH = 6.2
     RAINFALL = 300.0
 
