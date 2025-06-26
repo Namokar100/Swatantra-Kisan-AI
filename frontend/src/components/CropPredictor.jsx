@@ -1,4 +1,3 @@
-// src/components/CropPredictor.jsx
 import { useState } from 'react';
 import axios from 'axios';
 import FarmingAdvisor from './FarmingAdvisor';
@@ -8,6 +7,11 @@ const CropPredictor = ({ temperature, humidity, moisture }) => {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  // Optional manual inputs
+  const [manualTemp, setManualTemp] = useState('');
+  const [manualHumidity, setManualHumidity] = useState('');
+  const [manualMoisture, setManualMoisture] = useState('');
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -16,20 +20,21 @@ const CropPredictor = ({ temperature, humidity, moisture }) => {
       return;
     }
 
+    const finalTemp = manualTemp || temperature;
+    const finalHumidity = manualHumidity || humidity;
+    const finalMoisture = manualMoisture || moisture;
+
     const formData = new FormData();
     formData.append('image', image);
-    formData.append('temperature', temperature);
-    formData.append('humidity', humidity);
-    formData.append('moisture', moisture);
+    formData.append('temperature', finalTemp);
+    formData.append('humidity', finalHumidity);
+    formData.append('moisture', finalMoisture);
 
     try {
       setLoading(true);
       const response = await axios.post('http://localhost:8000/predict-crop/', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+        headers: { 'Content-Type': 'multipart/form-data' },
       });
-
       setResult(response.data);
     } catch (error) {
       console.error('Prediction Error:', error);
@@ -47,19 +52,47 @@ const CropPredictor = ({ temperature, humidity, moisture }) => {
         </h2>
 
         <div className="mb-6 text-gray-700 space-y-1">
-          <p><strong>🌡 Temperature:</strong> {temperature} °C</p>
-          <p><strong>💧 Humidity:</strong> {humidity} %</p>
-          <p><strong>🌱 Estimated Moisture:</strong> {moisture} %</p>
+          <p><strong>🌡 Auto Temperature:</strong> {temperature} °C</p>
+          <p><strong>💧 Auto Humidity:</strong> {humidity} %</p>
+          <p><strong>🌱 Auto Moisture:</strong> {moisture} %</p>
         </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          {/* Optional manual input fields */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <input
+              type="number"
+              placeholder="🌡 Manual Temp (°C)"
+              value={manualTemp}
+              onChange={(e) => setManualTemp(e.target.value)}
+              className="bg-green-50 border border-green-300 text-sm rounded-lg p-2.5 focus:ring-green-500 focus:border-green-500"
+            />
+            <input
+              type="number"
+              placeholder="💧 Manual Humidity (%)"
+              value={manualHumidity}
+              onChange={(e) => setManualHumidity(e.target.value)}
+              className="bg-green-50 border border-green-300 text-sm rounded-lg p-2.5 focus:ring-green-500 focus:border-green-500"
+            />
+            <input
+              type="number"
+              placeholder="🌱 Manual Moisture (%)"
+              value={manualMoisture}
+              onChange={(e) => setManualMoisture(e.target.value)}
+              className="bg-green-50 border border-green-300 text-sm rounded-lg p-2.5 focus:ring-green-500 focus:border-green-500"
+            />
+          </div>
+
+          {/* Image Upload */}
           <input
             type="file"
             onChange={(e) => setImage(e.target.files[0])}
             accept="image/*"
             required
-            className="bg-green-50 border border-green-300 text-sm rounded-lg block w-50.5 p-2.5 focus:ring-green-500 focus:border-green-500"
+            className="bg-green-50 border border-green-300 text-sm rounded-lg block w-full p-2.5 focus:ring-green-500 focus:border-green-500"
           />
+
+          {/* Submit Button */}
           <button
             type="submit"
             disabled={loading}
@@ -69,22 +102,22 @@ const CropPredictor = ({ temperature, humidity, moisture }) => {
           </button>
         </form>
 
+        {/* Result Section */}
         {result && (
           <div className="mt-6 bg-green-50 border border-green-200 rounded-xl p-6 shadow-inner space-y-2">
             <h3 className="text-xl font-semibold text-green-800">🧪 Prediction Result</h3>
             <p><strong>Soil Type:</strong> {result.soil_type}</p>
             <p><strong>NPK:</strong> N: {result.npk.Nitrogen}, P: {result.npk.Phosphorous}, K: {result.npk.Potassium}</p>
             <p><strong>Recommended Crop:</strong> {result.recommended_crop}</p>
-            {/* <p><strong>Confidence:</strong> {(result.confidence * 100).toFixed(2)}%</p> */}
           </div>
         )}
 
         {result && (
           <div className="mt-6">
             <FarmingAdvisor
-              temperature={temperature}
-              humidity={humidity}
-              moisture={moisture}
+              temperature={manualTemp || temperature}
+              humidity={manualHumidity || humidity}
+              moisture={manualMoisture || moisture}
               recommendedCrop={result.recommended_crop}
               npk={result.npk}
             />

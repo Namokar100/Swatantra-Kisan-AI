@@ -16,7 +16,7 @@ Based on the following conditions:
 - Recommended Crop: ${recommendedCrop}
 - NPK levels: Nitrogen=${npk.Nitrogen}, Phosphorous=${npk.Phosphorous}, Potassium=${npk.Potassium}
 
-Suggest 5 helpful farming tips in bullet points for a farmer, including recommended fertilizers, crop care techniques, or soil management practices to enhance crop yield.
+Suggest 5 helpful farming tips in bullet points(strictly 2 lines per point) for a farmer, including recommended fertilizers, crop care techniques, or soil management practices to enhance crop yield.
 `;
 
   useEffect(() => {
@@ -59,11 +59,23 @@ Suggest 5 helpful farming tips in bullet points for a farmer, including recommen
   }, [temperature, humidity, moisture, recommendedCrop, npk]);
 
   return (
-    <div style={{ marginTop: '2rem', padding: '1rem', border: '1px solid #ccc' }}>
-      <h3>Farming Recommendations</h3>
-      {loading ? <p>Fetching advice...</p> : <div dangerouslySetInnerHTML={{ __html: advice.replace(/\n/g, '<br/>') }} />}
+    <div className="mt-8 p-6 bg-green-50 border border-green-200 rounded-xl shadow-inner">
+      <h3 className="text-2xl font-semibold text-green-800 mb-4">🌾 Farming Recommendations</h3>
+      {loading ? (
+        <p className="text-gray-600">Fetching advice...</p>
+      ) : (
+        <ul className="list-disc list-inside space-y-3 text-gray-700 leading-relaxed">
+          {advice
+            .split('\n')
+            .filter((tip) => tip.trim() !== '')
+            .map((tip, index) => (
+              <li key={index} dangerouslySetInnerHTML={{ __html: tip.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />
+            ))}
+        </ul>
+      )}
     </div>
   );
+  
 };
 
 export default FarmingAdvisor;
